@@ -9,3 +9,9 @@ services:
       - ./models:/app/models:ro
     environment:
       - MODEL_PATH=/app/models/model_crnn.pt
+    networks:
+      - mobiclinic-net
+
+networks:
+  mobiclinic-net:
+    external: true

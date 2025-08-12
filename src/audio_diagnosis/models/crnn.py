@@ -7,7 +7,7 @@ class CRNN(nn.Module):
 
     Input shape: (B, 1, n_mels, T)
     """
-
+    
     def __init__(self, n_mels: int = 128, n_classes: int = 8, cnn_channels=(32, 64, 128), rnn_hidden=128, rnn_layers=2, dropout=0.3):
         super().__init__()
         layers = []

@@ -1,4 +1,4 @@
-# Lung Sound Diagnosis (CRNN Production Prototype)
+# Lung Sound Diagnosis (CRNN Production Ready)
 
 End-to-end pipeline and inference service for diagnosing lung diseases from electronic stethoscope recordings using a Convolutional Recurrent Neural Network (CRNN).
 
@@ -103,3 +103,7 @@ During training, the best model is exported to `models/model_crnn.ts` for portab
 - CI workflow (pytest + lint + docker build)
 
 MIT License.
+
+## Commands
+Build & Train: docker build -t audio-diagnosis:trained .
+Run: docker run -p 8000:8000 audio-diagnosis:trained
