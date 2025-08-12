@@ -1,0 +1,40 @@
+model:
+  type: crnn
+  n_mels: 128
+  cnn_channels: [32,64,128]
+  rnn_hidden: 128
+  rnn_layers: 2
+  dropout: 0.3
+train:
+  epochs: 60
+  batch_size: 32
+  lr: 5.0e-4
+  weight_decay: 1.0e-4
+  grad_clip: 5.0
+  mixed_precision: true
+  patience: 12
+  num_workers: 4
+  seed: 42
+  folds: 5
+  optimizer: adamw
+  scheduler: cosine
+  warmup_epochs: 3
+  ema: true
+  ema_decay: 0.999
+augment:
+  time_mask: 2
+  freq_mask: 2
+  mixup: 0.4
+  noise_std: 0.01
+preprocess:
+  sr: 4000
+  n_mels: 128
+  hop_length: 256
+  n_fft: 1024
+  fmin: 20
+  fmax: 1800
+  top_db: 80
+paths:
+  raw_dir: data/Audio Files
+  processed_dir: data/processed
+  models_dir: models

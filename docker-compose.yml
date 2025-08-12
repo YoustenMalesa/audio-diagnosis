@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  inference:
+    build: .
+    image: audio-diagnosis:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models:ro
+    environment:
+      - MODEL_PATH=/app/models/model_crnn.pt
