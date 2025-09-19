@@ -1,10 +1,11 @@
 version: '3.9'
 services:
-  inference:
+  audio-diagnosis-model:
     build: .
-    image: audio-diagnosis:latest
+    image: yousten/audio-diagnosis-model:latest
+    container_name: audio-diagnosis-model
     ports:
-      - "8000:8000"
+      - "8002:8000"
     volumes:
       - ./models:/app/models:ro
     environment:

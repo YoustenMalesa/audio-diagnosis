@@ -106,4 +106,4 @@ MIT License.
 
 ## Commands
 Build & Train: docker build -t audio-diagnosis:trained .
-Run: docker run -p 8000:8000 audio-diagnosis:trained
+Run: docker run -d --name audio-diagnosis-model --network mobiclinic-net -p 8002:8000 yousten/audio-diagnosis-model:trained
