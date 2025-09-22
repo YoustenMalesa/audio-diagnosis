@@ -1,3 +1,4 @@
+
 import io
 import os
 import librosa
@@ -7,6 +8,8 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.responses import JSONResponse
 from .schemas import CLASS_LABELS, PredictResponse, Prediction
 from ..models.crnn import CRNN
+from pydub import AudioSegment
+import tempfile
 
 MODEL_PATH = os.getenv('MODEL_PATH', 'models/model_crnn.pt')
 SAMPLE_RATE = int(os.getenv('SAMPLE_RATE', '4000'))
@@ -108,7 +111,37 @@ async def predict(
         raise HTTPException(status_code=400, detail="topk must be > 0")
     try:
         data = await file.read()
-        y, sr = librosa.load(io.BytesIO(data), sr=SAMPLE_RATE)
+        filename = file.filename.lower()
+        # Check extension
+        if filename.endswith('.wav'):
+            y, sr = librosa.load(io.BytesIO(data), sr=SAMPLE_RATE)
+        elif filename.endswith('.mp3') or filename.endswith('.mp4'):
+            # Convert to wav using pydub
+            with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1], delete=False) as temp_in:
+                temp_in.write(data)
+                temp_in.flush()
+                temp_in_path = temp_in.name
+            with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_out:
+                temp_out_path = temp_out.name
+            try:
+                audio = AudioSegment.from_file(temp_in_path)
+                audio = audio.set_channels(1)
+                audio = audio.set_frame_rate(SAMPLE_RATE)
+                audio.export(temp_out_path, format='wav')
+                y, sr = librosa.load(temp_out_path, sr=SAMPLE_RATE)
+            except Exception as e:
+                raise HTTPException(status_code=400, detail=f"Failed to convert audio to WAV: {e}")
+            finally:
+                try:
+                    os.remove(temp_in_path)
+                except Exception:
+                    pass
+                try:
+                    os.remove(temp_out_path)
+                except Exception:
+                    pass
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported audio format. Please upload a .wav, .mp3, or .mp4 file.")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to read audio: {e}")
     mel = extract_logmel(y, sr)

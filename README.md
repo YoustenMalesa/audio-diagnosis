@@ -105,5 +105,5 @@ During training, the best model is exported to `models/model_crnn.ts` for portab
 MIT License.
 
 ## Commands
-Build & Train: docker build -t audio-diagnosis:trained .
-Run: docker run -d --name audio-diagnosis-model --network mobiclinic-net -p 8002:8000 yousten/audio-diagnosis-model:trained
+Build & Train: docker build -t audio-diagnosis-model:trained .
+Run: docker run -d --name audio-diagnosis-model --network mobiclinic-net -p 8002:8000 audio-diagnosis-model:trained
